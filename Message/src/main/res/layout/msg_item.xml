@@ -52,4 +52,18 @@
             android:id="@+id/right_image" />
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/chat_left_status"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:text="status" />
+
+    <TextView
+        android:id="@+id/chat_right_status"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:text="status"/>
+
 </LinearLayout>

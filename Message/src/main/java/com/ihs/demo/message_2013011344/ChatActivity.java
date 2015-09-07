@@ -199,7 +199,7 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
         if (name.equals(DemoApplication.APPLICATION_NOTIFICATION_MESSAGE_CHANGE)) {
             HSMessageChangeType changeType = (HSMessageChangeType)bundle.getObject("changeType");
             List<HSBaseMessage> messages = (List<HSBaseMessage>)bundle.getObject("messages");
-            boolean flag = false;
+            boolean flag = false, sendUnreadNotification = false;
 
             for (HSBaseMessage message : messages)
                 if (message.getTo().equals(mid) || message.getFrom().equals(mid)) {
@@ -210,11 +210,11 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
                 }
 
             if (flag) {
-                flushData();
                 if (HSSessionMgr.getTopActivity() == this && HSMessageManager.getInstance().queryUnreadCount(mid) > 0) {
                     HSMessageManager.getInstance().markRead(mid);
                     HSGlobalNotificationCenter.sendNotificationOnMainThread(DemoApplication.APPLICATION_NOTIFICATION_UNREAD_CHANGE);
                 }
+                flushData();
             }
         }
     }

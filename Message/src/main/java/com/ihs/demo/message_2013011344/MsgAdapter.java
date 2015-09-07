@@ -46,6 +46,8 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
             viewHolder.rightLayout = (LinearLayout) view.findViewById(R.id.right_layout);
             viewHolder.leftMsgText = (TextView) view.findViewById(R.id.left_msg);
             viewHolder.rightMsgText = (TextView) view.findViewById(R.id.right_msg);
+            viewHolder.leftStatus = (TextView) view.findViewById(R.id.chat_left_status);
+            viewHolder.rightStatus = (TextView) view.findViewById(R.id.chat_right_status);
             viewHolder.leftMsgImage = (ImageView) view.findViewById(R.id.left_image);
             viewHolder.rightMsgImage = (ImageView) view.findViewById(R.id.right_image);
             view.setTag(viewHolder);
@@ -55,9 +57,14 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
         }
         if (msg.getTo().equals(HSAccountManager.getInstance().getMainAccount().getMID())) {
             viewHolder.leftLayout.setVisibility(View.VISIBLE);
+            viewHolder.leftStatus.setVisibility(View.VISIBLE);
+            HSBaseMessage.HSMessageStatus st = msg.getStatus();
+            if (st == HSBaseMessage.HSMessageStatus.UNREAD) st = HSBaseMessage.HSMessageStatus.READ;
+            viewHolder.leftStatus.setText(st.toString());
             viewHolder.rightLayout.setVisibility(View.GONE);
+            viewHolder.rightStatus.setVisibility(View.GONE);
             if (msg.getType() == HSMessageType.TEXT) {
-                viewHolder.leftMsgText.setText(((HSTextMessage)msg).getText().toString());
+                viewHolder.leftMsgText.setText(((HSTextMessage) msg).getText().toString());
                 viewHolder.leftMsgText.setVisibility(View.VISIBLE);
                 viewHolder.leftMsgImage.setVisibility(View.GONE);
             } else if (msg.getType() == HSMessageType.IMAGE) {
@@ -94,7 +101,11 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
             }
         } else if (msg.getFrom().equals(HSAccountManager.getInstance().getMainAccount().getMID())) {
             viewHolder.rightLayout.setVisibility(View.VISIBLE);
+            viewHolder.rightStatus.setVisibility(View.VISIBLE);
             viewHolder.leftLayout.setVisibility(View.GONE);
+            viewHolder.leftStatus.setVisibility(View.GONE);
+            viewHolder.rightStatus.setText(msg.getStatus().toString());
+
             if (msg.getType() == HSMessageType.TEXT) {
                 viewHolder.rightMsgText.setText(((HSTextMessage)msg).getText().toString());
                 viewHolder.rightMsgText.setVisibility(View.VISIBLE);
@@ -125,9 +136,10 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
     class ViewHolder {
         LinearLayout leftLayout;
         LinearLayout rightLayout;
-        TextView leftMsgText;
-        TextView rightMsgText;
+        TextView leftMsgText, leftStatus;
+        TextView rightMsgText, rightStatus;
         ImageView leftMsgImage;
         ImageView rightMsgImage;
+
     }
 }

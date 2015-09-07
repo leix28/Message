@@ -1,6 +1,7 @@
 package com.ihs.demo.message_2013011344;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +62,7 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
                 viewHolder.leftMsgImage.setVisibility(View.GONE);
             } else if (msg.getType() == HSMessageType.IMAGE) {
                 Uri uri;
-                HSImageMessage imgmsg = (HSImageMessage)msg;
+                final HSImageMessage imgmsg = (HSImageMessage)msg;
                 if (imgmsg.getNormalImageMediaStatus() == HSBaseMessage.HSMessageMediaStatus.TO_DOWNLOAD) {
                     imgmsg.download();
                 }
@@ -76,6 +77,16 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
                 viewHolder.leftMsgImage.setImageURI(uri);
                 viewHolder.leftMsgText.setVisibility(View.GONE);
                 viewHolder.leftMsgImage.setVisibility(View.VISIBLE);
+                viewHolder.leftMsgImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (imgmsg.getNormalImageMediaStatus() == HSBaseMessage.HSMessageMediaStatus.DOWNLOADED) {
+                            Intent intent = new Intent(getContext(), ImgActivity.class);
+                            intent.putExtra("src", imgmsg.getNormalImageFilePath());
+                            getContext().startActivity(intent);
+                        }
+                    }
+                });
             } else {
                 viewHolder.leftMsgText.setText(msg.toString());
                 viewHolder.leftMsgText.setVisibility(View.VISIBLE);
@@ -89,10 +100,19 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
                 viewHolder.rightMsgText.setVisibility(View.VISIBLE);
                 viewHolder.rightMsgImage.setVisibility(View.GONE);
             } else if (msg.getType() == HSMessageType.IMAGE) {
-                HSImageMessage imgmsg = (HSImageMessage)msg;
+                final HSImageMessage imgmsg = (HSImageMessage)msg;
                 viewHolder.rightMsgImage.setImageURI(Uri.fromFile(new File(imgmsg.getNormalImageFilePath())));
                 viewHolder.rightMsgText.setVisibility(View.GONE);
                 viewHolder.rightMsgImage.setVisibility(View.VISIBLE);
+
+                viewHolder.rightMsgImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), ImgActivity.class);
+                        intent.putExtra("src", imgmsg.getNormalImageFilePath());
+                        getContext().startActivity(intent);
+                    }
+                });
             } else {
                 viewHolder.rightMsgText.setText(msg.toString());
                 viewHolder.rightMsgText.setVisibility(View.VISIBLE);

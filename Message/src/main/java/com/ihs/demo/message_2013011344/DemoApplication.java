@@ -242,13 +242,13 @@ public class DemoApplication extends HSApplication implements HSMessageChangeLis
     public void onMessageChanged(HSMessageChangeType changeType, List<HSBaseMessage> messages) {
         // 同学们可以根据 changeType 的消息增加、删除、更新信息进行会话数据的构建
 
-        if (changeType == HSMessageChangeType.ADDED && !messages.isEmpty()) {
+        if (!messages.isEmpty()) {
             HSBundle bundle = new HSBundle();
             bundle.putObject("changeType", changeType);
             bundle.putObject("messages", messages);
             HSGlobalNotificationCenter.sendNotificationOnMainThread(APPLICATION_NOTIFICATION_MESSAGE_CHANGE, bundle);
             HSGlobalNotificationCenter.sendNotificationOnMainThread(APPLICATION_NOTIFICATION_UNREAD_CHANGE, new HSBundle());
-            if (HSSessionMgr.getTopActivity() != null) {
+            if (HSSessionMgr.getTopActivity() != null && changeType == HSMessageChangeType.ADDED) {
                 for (HSBaseMessage message : messages) {
                     if (message.getFrom().equals(HSAccountManager.getInstance().getMainAccount().getMID())) {
                         if (!sendPlayer.isPlaying()) {

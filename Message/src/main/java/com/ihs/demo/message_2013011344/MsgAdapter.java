@@ -1,6 +1,7 @@
 package com.ihs.demo.message_2013011344;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +11,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ihs.account.api.account.HSAccountManager;
+import com.ihs.app.framework.HSApplication;
 import com.ihs.message_2013011344.R;
 import com.ihs.message_2013011344.types.HSBaseMessage;
+import com.ihs.message_2013011344.types.HSImageMessage;
 import com.ihs.message_2013011344.types.HSMessageType;
 import com.ihs.message_2013011344.types.HSTextMessage;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -55,10 +59,23 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
                 viewHolder.leftMsgText.setText(((HSTextMessage)msg).getText().toString());
                 viewHolder.leftMsgText.setVisibility(View.VISIBLE);
                 viewHolder.leftMsgImage.setVisibility(View.GONE);
-//            } else if (msg.getType() == HSMessageType.IMAGE) {
-//                viewHolder.leftMsgImage.setImageURI(Uri.fromFile(new File(((HSImageMessage) msg).getNormalImageFilePath())));
-//                viewHolder.leftMsgText.setVisibility(View.GONE);
-//                viewHolder.leftMsgImage.setVisibility(View.VISIBLE);
+            } else if (msg.getType() == HSMessageType.IMAGE) {
+                Uri uri;
+                HSImageMessage imgmsg = (HSImageMessage)msg;
+                if (imgmsg.getNormalImageMediaStatus() == HSBaseMessage.HSMessageMediaStatus.TO_DOWNLOAD) {
+                    imgmsg.download();
+                }
+                if (imgmsg.getNormalImageMediaStatus() == HSBaseMessage.HSMessageMediaStatus.DOWNLOADED) {
+                    uri = Uri.fromFile(new File(imgmsg.getNormalImageFilePath()));
+                } else {
+                    final File imageFile = new File(HSApplication.getContext().getCacheDir() + "/" + "loading_img.png");
+                    SampleFragment.copy("loading_img.png", imageFile);
+
+                    uri = Uri.fromFile(imageFile);
+                }
+                viewHolder.leftMsgImage.setImageURI(uri);
+                viewHolder.leftMsgText.setVisibility(View.GONE);
+                viewHolder.leftMsgImage.setVisibility(View.VISIBLE);
             } else {
                 viewHolder.leftMsgText.setText(msg.toString());
                 viewHolder.leftMsgText.setVisibility(View.VISIBLE);
@@ -71,10 +88,11 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
                 viewHolder.rightMsgText.setText(((HSTextMessage)msg).getText().toString());
                 viewHolder.rightMsgText.setVisibility(View.VISIBLE);
                 viewHolder.rightMsgImage.setVisibility(View.GONE);
-//            } else if (msg.getType() == HSMessageType.IMAGE) {
-//                viewHolder.rightMsgImage.setImageURI(Uri.fromFile(new File(((HSImageMessage) msg).getNormalImageFilePath())));
-//                viewHolder.rightMsgText.setVisibility(View.GONE);
-//                viewHolder.rightMsgImage.setVisibility(View.VISIBLE);
+            } else if (msg.getType() == HSMessageType.IMAGE) {
+                HSImageMessage imgmsg = (HSImageMessage)msg;
+                viewHolder.rightMsgImage.setImageURI(Uri.fromFile(new File(imgmsg.getNormalImageFilePath())));
+                viewHolder.rightMsgText.setVisibility(View.GONE);
+                viewHolder.rightMsgImage.setVisibility(View.VISIBLE);
             } else {
                 viewHolder.rightMsgText.setText(msg.toString());
                 viewHolder.rightMsgText.setVisibility(View.VISIBLE);

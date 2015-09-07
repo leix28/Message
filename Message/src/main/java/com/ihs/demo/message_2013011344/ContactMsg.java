@@ -55,8 +55,13 @@ public class ContactMsg {
 
     public String getIntroduction() {
         if (message.getType() == HSMessageType.TEXT) {
-            return ((HSTextMessage)message).getText().toString();
+            String tmp = ((HSTextMessage)message).getText().toString();
+            if (tmp.length() < 15)
+                return tmp;
+            else
+                return tmp.substring(13) + "...";
+        } else {
+            return "[" + message.getTypeString() + "]";
         }
-        return "[Unknown message type]";
     }
 }

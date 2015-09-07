@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.ihs.app.framework.HSSessionMgr;
 import com.ihs.commons.notificationcenter.HSGlobalNotificationCenter;
 import com.ihs.commons.notificationcenter.INotificationObserver;
 import com.ihs.commons.utils.HSBundle;
@@ -162,7 +163,7 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
 
     @Override
     protected void onNewIntent(Intent intent) {
-        super.onResume();
+        super.onNewIntent(intent);
         mid = intent.getExtras().getString("message_mid");
         name = intent.getExtras().getString("message_name");
         setTitle(name);
@@ -198,14 +199,23 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
         if (name.equals(DemoApplication.APPLICATION_NOTIFICATION_MESSAGE_CHANGE)) {
             HSMessageChangeType changeType = (HSMessageChangeType)bundle.getObject("changeType");
             List<HSBaseMessage> messages = (List<HSBaseMessage>)bundle.getObject("messages");
-            if (changeType == HSMessageChangeType.ADDED) {
-                for (HSBaseMessage message : messages) {
-                    chatHistoryList.add(message);
+            boolean flag = false;
+
+            for (HSBaseMessage message : messages)
+                if (message.getTo().equals(mid) || message.getFrom().equals(mid)) {
+                    if (changeType == HSMessageChangeType.ADDED) {
+                        chatHistoryList.add(message);
+                    }
+                    flag = true;
+                }
+
+            if (flag) {
+                flushData();
+                if (HSSessionMgr.getTopActivity() == this && HSMessageManager.getInstance().queryUnreadCount(mid) > 0) {
+                    HSMessageManager.getInstance().markRead(mid);
+                    HSGlobalNotificationCenter.sendNotificationOnMainThread(DemoApplication.APPLICATION_NOTIFICATION_UNREAD_CHANGE);
                 }
             }
-            flushData();
-            HSMessageManager.getInstance().markRead(mid);
-            HSGlobalNotificationCenter.sendNotificationOnMainThread(DemoApplication.APPLICATION_NOTIFICATION_UNREAD_CHANGE);
         }
     }
 
@@ -236,5 +246,11 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
         cursor.close();
         HSLog.e(TAG, picturePath);
         return picturePath;
+    }
+
+    @Override
+    protected void onDestroy() {
+        HSGlobalNotificationCenter.removeObserver(DemoApplication.APPLICATION_NOTIFICATION_MESSAGE_CHANGE, this);
+        super.onDestroy();
     }
 }

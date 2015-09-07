@@ -2,7 +2,7 @@
 <resources>
 
     <color name="white_smoke">#F7F7F7</color>
-    <color name="white">#ffffff</color>
+    <color name="whitex">#ffffff</color>
     <color name="black">#000000</color>
     <color name="transparent">#00000000</color>
     <color name="main_color_green">#00b863</color>
@@ -20,4 +20,9 @@
     <color name="multi_buttons_bg">#B1B1B1</color>
     <color name="gold">#000000</color>
 
+
+    <color name="royal_blue">#27408B</color>
+    <color name="light_blue">#add8e6</color>
+    <color name="sea_green">#2e8b57</color>
+    <color name="beige">#f5f5dc</color>
 </resources>

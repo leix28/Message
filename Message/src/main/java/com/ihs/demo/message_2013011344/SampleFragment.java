@@ -166,7 +166,7 @@ public class SampleFragment extends Fragment {
                         case 5: { // 在线消息
                             JSONObject content = new JSONObject();
                             try {
-                                // 可以向 online message 的消息体中放入字典格式的任意定制内容
+                                // 可以向 online message_2013011344 的消息体中放入字典格式的任意定制内容
                                 content.put("game-name", "2048");
                                 content.put("game-mode", "2-person");
                                 JSONObject actionInfo = new JSONObject();

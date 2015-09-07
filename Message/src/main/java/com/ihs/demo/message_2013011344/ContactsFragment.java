@@ -1,8 +1,6 @@
 package com.ihs.demo.message_2013011344;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,12 +9,15 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.Toast;
 
+import com.ihs.account.api.account.HSAccountManager;
 import com.ihs.commons.notificationcenter.HSGlobalNotificationCenter;
 import com.ihs.commons.notificationcenter.INotificationObserver;
 import com.ihs.commons.utils.HSBundle;
 import com.ihs.message_2013011344.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContactsFragment extends Fragment implements INotificationObserver {
 
@@ -38,7 +39,11 @@ public class ContactsFragment extends Fragment implements INotificationObserver 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String mid = contacts.get(position).getMid();
                 String name = contacts.get(position).getName();
-                Toast.makeText(getActivity(), "你点击了名字为：" + name + " mid为：" + mid + "的联系人，需要在这里跳转到同此人的聊天界面（一个Activity）", Toast.LENGTH_LONG).show();
+
+                Intent intent = new Intent(ContactsFragment.this.getActivity(), ChatActivity.class);
+                intent.putExtra("message_name", name);
+                intent.putExtra("message_mid", mid);
+                startActivity(intent);
             }
 
         });
@@ -49,8 +54,11 @@ public class ContactsFragment extends Fragment implements INotificationObserver 
 
     void refresh() {
         adapter.getContacts().clear();
-        adapter.getContacts().addAll(FriendManager.getInstance().getAllFriends());
-        adapter.notifyDataSetChanged();
+        if  (FriendManager.getInstance() != null && HSAccountManager.getInstance().getMainAccount() != null) {
+            adapter.getContacts().addAll(FriendManager.getInstance().getAllFriends());
+            adapter.getContacts().remove(FriendManager.getInstance().getFriend(HSAccountManager.getInstance().getMainAccount().getMID()));
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override

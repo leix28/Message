@@ -67,6 +67,7 @@ public class MessagesFragment extends Fragment implements INotificationObserver 
                 contactMsgs.add(new ContactMsg(contact, messages.get(0)));
             }
         }
+        HSGlobalNotificationCenter.addObserver(DemoApplication.APPLICATION_NOTIFICATION_UNREAD_CHANGE, this);
         refresh();
         return view;
     }

@@ -157,6 +157,7 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
         NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(Integer.valueOf(mid));
         HSMessageManager.getInstance().markRead(mid);
+        HSGlobalNotificationCenter.sendNotificationOnMainThread(DemoApplication.APPLICATION_NOTIFICATION_UNREAD_CHANGE);
     }
 
     @Override
@@ -203,6 +204,8 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
                 }
             }
             flushData();
+            HSMessageManager.getInstance().markRead(mid);
+            HSGlobalNotificationCenter.sendNotificationOnMainThread(DemoApplication.APPLICATION_NOTIFICATION_UNREAD_CHANGE);
         }
     }
 

@@ -48,6 +48,7 @@ public class ContactsFragment extends Fragment implements INotificationObserver 
 
         });
         HSGlobalNotificationCenter.addObserver(FriendManager.NOTIFICATION_NAME_FRIEND_CHANGED, this);
+        HSGlobalNotificationCenter.addObserver(DemoApplication.APPLICATION_NOTIFICATION_UNREAD_CHANGE, this);
         refresh();
         return view;
     }

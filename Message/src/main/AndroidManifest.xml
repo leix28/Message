@@ -72,6 +72,9 @@
         </activity>
         <activity android:name="com.ihs.demo.message_2013011344.CongratulationActivity" >
         </activity>
+        <activity android:name="com.ihs.demo.message_2013011344.ChatActivity"
+            android:launchMode="singleTop">
+        </activity>
 
         <!-- ===================================================== -->
         <!-- required by libAppFramework -->

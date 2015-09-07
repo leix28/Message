@@ -51,7 +51,8 @@ public class DemoApplication extends HSApplication implements HSMessageChangeLis
      */
     public static final String URL_SYNC = "http://54.223.212.19:8024/template/contacts/friends/get";
     public static final String URL_ACK = "http://54.223.212.19:8024/template/contacts/friends/get";
-    public static final String APPLICATION_NOTIFICATION_MESSAGE_CHANGE = "APPLICATON_NOTIFICATION_MESSAGE_CHANGE";
+    public static final String APPLICATION_NOTIFICATION_MESSAGE_CHANGE = "APPLICATION_NOTIFICATION_MESSAGE_CHANGE";
+    public static final String APPLICATION_NOTIFICATION_UNREAD_CHANGE = "APPLICATION_NOTIFICATION_UNREAD_CHANGE";
     MediaPlayer receivePlayer;
     MediaPlayer sendPlayer;
     private static final String TAG = DemoApplication.class.getName(); // 用于打印 log
@@ -240,11 +241,13 @@ public class DemoApplication extends HSApplication implements HSMessageChangeLis
     @Override
     public void onMessageChanged(HSMessageChangeType changeType, List<HSBaseMessage> messages) {
         // 同学们可以根据 changeType 的消息增加、删除、更新信息进行会话数据的构建
+
         if (changeType == HSMessageChangeType.ADDED && !messages.isEmpty()) {
             HSBundle bundle = new HSBundle();
             bundle.putObject("changeType", changeType);
             bundle.putObject("messages", messages);
             HSGlobalNotificationCenter.sendNotificationOnMainThread(APPLICATION_NOTIFICATION_MESSAGE_CHANGE, bundle);
+            HSGlobalNotificationCenter.sendNotificationOnMainThread(APPLICATION_NOTIFICATION_UNREAD_CHANGE, new HSBundle());
             if (HSSessionMgr.getTopActivity() != null) {
                 for (HSBaseMessage message : messages) {
                     if (message.getFrom().equals(HSAccountManager.getInstance().getMainAccount().getMID())) {

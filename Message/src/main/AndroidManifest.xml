@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ihs.message"
+    package="com.ihs.message_2013011344"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -36,7 +36,7 @@
         android:protectionLevel="signature" />
 
     <application
-        android:name="com.ihs.demo.message.DemoApplication"
+        android:name="com.ihs.demo.message_2013011344.DemoApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
@@ -52,7 +52,7 @@
         </service>
 
         <activity
-            android:name="com.ihs.demo.message.MainActivity"
+            android:name="com.ihs.demo.message_2013011344.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -61,16 +61,16 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ihs.demo.message.LoginActivity"
+            android:name="com.ihs.demo.message_2013011344.LoginActivity"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="com.ihs.demo.message.ZoomImageView" >
+        <activity android:name="com.ihs.demo.message_2013011344.ZoomImageView" >
         </activity>
-        <activity android:name="com.ihs.demo.message.ProBaseActivity" >
+        <activity android:name="com.ihs.demo.message_2013011344.ProBaseActivity" >
         </activity>
-        <activity android:name="com.ihs.demo.message.MtVerifyActivity" >
+        <activity android:name="com.ihs.demo.message_2013011344.MtVerifyActivity" >
         </activity>
-        <activity android:name="com.ihs.demo.message.CongratulationActivity" >
+        <activity android:name="com.ihs.demo.message_2013011344.CongratulationActivity" >
         </activity>
 
         <!-- ===================================================== -->

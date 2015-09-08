@@ -1,5 +1,7 @@
 package com.ihs.demo.message_2013011344;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -29,6 +31,7 @@ public class MessagesFragment extends Fragment implements INotificationObserver 
     private ListView listView;
     private ContactMsgAdapter adapter = null;
     private List<ContactMsg> contactMsgs;
+    public final static String MESSAGE_DELETE_NOTIFICATION = "MESSAGE_DELETE_NOTIFICATION";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,15 +62,59 @@ public class MessagesFragment extends Fragment implements INotificationObserver 
             }
 
         });
-        HSGlobalNotificationCenter.addObserver(DemoApplication.APPLICATION_NOTIFICATION_MESSAGE_CHANGE, this);
-        for (Contact contact : FriendManager.getInstance().getAllFriends()) {
-            if (contact.getMid().equals(HSAccountManager.getInstance().getMainAccount().getMID())) continue;
-            List<HSBaseMessage> messages = HSMessageManager.getInstance().queryMessages(contact.getMid(), 1, -1).getMessages();
-            if (messages.size() == 1) {
-                contactMsgs.add(new ContactMsg(contact, messages.get(0)));
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final String mid = contactMsgs.get(position).getContactMid();
+                String name = contactMsgs.get(position).getContactName();
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage("Delete message " + name + "?");
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        ContactMstManager.getInstance().deleteMsgs(mid);
+                        HSBundle bundle = new HSBundle();
+                        bundle.putObject("mid", mid);
+                        HSGlobalNotificationCenter.sendNotificationOnMainThread(MESSAGE_DELETE_NOTIFICATION, bundle);
+                        if (HSMessageManager.getInstance().queryUnreadCount(mid) > 0) {
+                            HSMessageManager.getInstance().markRead(mid);
+                            HSGlobalNotificationCenter.sendNotificationOnMainThread(DemoApplication.APPLICATION_NOTIFICATION_UNREAD_CHANGE);
+                        }
+                    }
+                });
+
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.create().show();
+                return true;
             }
+        });
+
+        HSGlobalNotificationCenter.addObserver(DemoApplication.APPLICATION_NOTIFICATION_MESSAGE_CHANGE, this);
+        for (String mid : ContactMstManager.getInstance().getMids()) {
+            if (mid.equals(HSAccountManager.getInstance().getMainAccount().getMID())) continue;
+            if (!ContactMstManager.getInstance().hasMsgs(mid)) continue;
+
+            HSBaseMessage message = HSMessageManager.getInstance().queryMessage(ContactMstManager.getInstance().getFirstMsg(mid));
+            Contact contact = FriendManager.getInstance().getFriend(mid);
+            if (contact != null)
+                contactMsgs.add(new ContactMsg(contact, message));
+            else
+                contactMsgs.add(new ContactMsg(mid, message));
+
         }
         HSGlobalNotificationCenter.addObserver(DemoApplication.APPLICATION_NOTIFICATION_UNREAD_CHANGE, this);
+        HSGlobalNotificationCenter.addObserver(MESSAGE_DELETE_NOTIFICATION, this);
         refresh();
         return view;
     }
@@ -123,6 +170,18 @@ public class MessagesFragment extends Fragment implements INotificationObserver 
                         contactMsgs.add(contactMsg);
                     }
                 }
+            }
+        }
+
+        if (name.equals(MESSAGE_DELETE_NOTIFICATION)) {
+            String mid = (String)bundle.getObject("mid");
+            if (contactMsgs != null) {
+                for (int i = 0; i < contactMsgs.size(); i++)
+                    if (contactMsgs.get(i).getContactMid().equals(mid)) {
+                        contactMsgs.remove(i);
+                        adapter.notifyDataSetChanged();
+                        break;
+                    }
             }
         }
         refresh();

@@ -37,7 +37,6 @@ import com.ihs.message_2013011344.types.HSImageMessage;
 import com.ihs.message_2013011344.types.HSTextMessage;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ChatActivity extends HSActionBarActivity implements INotificationObserver {
@@ -90,7 +89,6 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
 
                     @Override
                     public void onMessageSentFinished(HSBaseMessage message, boolean success, HSError error) {
-                        //TODO send status
                         HSLog.d(TAG, "success: " + success);
                     }
                 }, new Handler());
@@ -111,7 +109,7 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 moreChoiceBar.setVisibility(View.VISIBLE);
-                InputMethodManager inputMethodManager = (InputMethodManager)  getSystemService(Activity.INPUT_METHOD_SERVICE);
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                 return false;
             }
@@ -121,7 +119,7 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 moreChoiceBar.setVisibility(View.GONE);
-                InputMethodManager inputMethodManager = (InputMethodManager)  getSystemService(Activity.INPUT_METHOD_SERVICE);
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                 return false;
             }
@@ -138,16 +136,15 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
         });
 
         HSGlobalNotificationCenter.addObserver(DemoApplication.APPLICATION_NOTIFICATION_MESSAGE_CHANGE, this);
-
+        HSGlobalNotificationCenter.addObserver(MessagesFragment.MESSAGE_DELETE_NOTIFICATION, this);
         init();
     }
 
     private void init() {
 
-        List<HSBaseMessage> messages = HSMessageManager.getInstance().queryMessages(mid, 0, -1).getMessages();
-        Collections.reverse(messages);
-        for (HSBaseMessage message : messages) {
-            chatHistoryList.add(message);
+        ArrayList<String> messages = ContactMstManager.getInstance().getMsgs(mid);
+        for (String messageId : messages) {
+            chatHistoryList.add(HSMessageManager.getInstance().queryMessage(messageId));
         }
         flushData();
     }
@@ -217,6 +214,15 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
                 flushData();
             }
         }
+
+        if (name.equals(MessagesFragment.MESSAGE_DELETE_NOTIFICATION)) {
+            String delMid = (String)bundle.getObject("mid");
+            if (mid.equals(delMid)) {
+                chatHistoryList.clear();
+                flushData();
+            }
+
+        }
     }
 
     @Override
@@ -227,7 +233,6 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
 
             @Override
             public void onMessageSentFinished(HSBaseMessage message, boolean success, HSError error) {
-                //TODO send status
                 HSLog.e(TAG, "success: " + success);
             }
         }, new Handler());

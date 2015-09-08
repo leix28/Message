@@ -261,6 +261,7 @@ public class DemoApplication extends HSApplication implements HSMessageChangeLis
                         }
                     }
                 }
+                ContactMstManager.getInstance().insertMsgs(messages);
             }
         }
     }

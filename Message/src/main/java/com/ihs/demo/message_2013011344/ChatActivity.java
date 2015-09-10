@@ -230,12 +230,15 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
         if (data == null) return;
         Uri img = data.getData();//得到新Activity 关闭后返回的数据
         String path = getRealPathFromURI(img);
-        if (path == null) return;
+        if (path == null) {
+            HSLog.e(TAG, img.toString());
+            return;
+        }
         HSMessageManager.getInstance().send(new HSImageMessage(mid, path), new HSMessageManager.SendMessageCallback() {
 
             @Override
             public void onMessageSentFinished(HSBaseMessage message, boolean success, HSError error) {
-                HSLog.e(TAG, "success: " + success);
+                HSLog.d(TAG, "success: " + success);
             }
         }, new Handler());
     }
@@ -244,7 +247,7 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
         String[] projection = { MediaStore.Images.Media.DATA };
 
         Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-        if (cursor == null) return null;
+        if (cursor == null) return uri.getPath();
         cursor.moveToFirst();
 
         Log.d(TAG, DatabaseUtils.dumpCursorToString(cursor));

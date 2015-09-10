@@ -89,14 +89,14 @@
         android:gravity="center">
 
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:id="@+id/chat_send_image"
             android:src="@drawable/white_image_icon"
             android:layout_margin="20dp"/>
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_margin="20dp"
             android:id="@+id/chat_send_location"
             android:src="@drawable/white_position_icon"/>

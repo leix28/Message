@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ihs.account.api.account.HSAccountManager;
 import com.ihs.app.framework.HSApplication;
@@ -115,7 +116,7 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
                             MediaPlayer player = MediaPlayer.create(getContext(), Uri.fromFile(new File(adimsg.getAudioFilePath())));
                             player.start();
                         } else {
-                            //TODO download not finish
+                            Toast.makeText(getContext(), "Downloading", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });

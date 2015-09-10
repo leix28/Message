@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.ihs.app.framework.HSApplication;
@@ -204,7 +205,7 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
                     long duration = new Date().getTime() - voiceStart;
                     duration /= 1000;
                     if (duration < 1) {
-                        //TODO too short voice;
+                        Toast.makeText(ChatActivity.this, "Too short. ", Toast.LENGTH_SHORT).show();
                         return false;
                     }
                     HSAudioMessage message = new HSAudioMessage(mid, voiceName, duration);

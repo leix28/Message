@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.ihs.account.api.account.HSAccountManager;
 import com.ihs.commons.notificationcenter.HSGlobalNotificationCenter;
@@ -117,6 +118,12 @@ public class MessagesFragment extends Fragment implements INotificationObserver 
         HSGlobalNotificationCenter.addObserver(MESSAGE_DELETE_NOTIFICATION, this);
         refresh();
         return view;
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        Toast.makeText(this.getActivity(), "Hold to Delete. ", Toast.LENGTH_SHORT).show();
     }
 
     void refresh() {

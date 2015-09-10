@@ -27,6 +27,7 @@ import java.io.File;
 import java.util.List;
 
 /**
+ * 处理左右气泡和各种声音、图片、地理位置
  * Created by LazyLie on 15/9/5.
  */
 public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {

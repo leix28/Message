@@ -46,6 +46,10 @@ import java.util.List;
 
 import test.contacts.demo.friends.api.HSContactFriendsMgr;
 
+/**
+ * 用作中央控制器，各种消息(Notification)大多从这里发出
+ * 仅有这里对MessageManager做了监听
+ */
 public class DemoApplication extends HSApplication implements HSMessageChangeListener, INotificationObserver {
 
     /*

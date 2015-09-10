@@ -5,6 +5,8 @@ import com.ihs.message_2013011344.types.HSMessageType;
 import com.ihs.message_2013011344.types.HSTextMessage;
 
 /**
+ * 用于处理用户和最新的一条消息
+ * 用户可以不是好友，但保证contact和mid中至少有一个不是null
  * Created by LazyLie on 15/9/6.
  */
 public class ContactMsg {

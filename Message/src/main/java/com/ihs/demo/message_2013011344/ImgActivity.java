@@ -11,6 +11,9 @@ import com.ihs.message_2013011344.R;
 
 import java.io.File;
 
+/**
+ * 全屏幕显示图片
+ */
 public class ImgActivity extends Activity {
 
     ImageView imgView;

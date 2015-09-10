@@ -47,7 +47,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
+/**
+ * 用于处理聊天界面的活动。
+ * 接收GlobalNotificationCenter中APPLICATION_NOTIFICATION_MESSAGE_CHANGE的消息
+ * 会发送APPLICATION_NOTIFICATION_UNREAD_CHANGE的消息
+ */
 public class ChatActivity extends HSActionBarActivity implements INotificationObserver {
 
     String mid, name;
@@ -64,11 +68,18 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
     String voiceName;
     long voiceStart;
 
+    /**
+     * 刷新列表，并保持在最新的消息处
+     */
     private void flushData() {
         chatHistoryListAdapter.notifyDataSetChanged();
         chatHistoryListView.setSelection(chatHistoryList.size() - 1);
     }
 
+    /**
+     * 创建窗口，包括设置按钮的动作和监听消息
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

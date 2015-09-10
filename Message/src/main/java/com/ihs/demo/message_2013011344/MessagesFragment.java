@@ -27,6 +27,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+/**
+ * 会话界面，包括未读消息的更新和排序。
+ */
 public class MessagesFragment extends Fragment implements INotificationObserver {
 
     private ListView listView;

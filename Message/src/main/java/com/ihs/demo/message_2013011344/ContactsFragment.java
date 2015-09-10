@@ -19,6 +19,10 @@ import com.ihs.message_2013011344.R;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 联系人界面
+ * 去掉了头像，添加了未读消息的数量
+ */
 public class ContactsFragment extends Fragment implements INotificationObserver {
 
     private ListView listView;

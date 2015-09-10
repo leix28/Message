@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 数据库，用于维护消息列表，处理删除消息的操作
  * Created by LazyLie on 15/9/8.
  */
 

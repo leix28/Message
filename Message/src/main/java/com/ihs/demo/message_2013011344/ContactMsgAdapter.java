@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
+ * 创建会话界面的view
  * Created by LazyLie on 15/9/6.
  */
 public class ContactMsgAdapter extends ArrayAdapter<ContactMsg> {

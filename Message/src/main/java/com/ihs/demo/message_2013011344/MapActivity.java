@@ -16,6 +16,9 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.ihs.message_2013011344.R;
 
+/**
+ * 显示百度地图
+ */
 public class MapActivity extends Activity {
 
     MapView mapView;

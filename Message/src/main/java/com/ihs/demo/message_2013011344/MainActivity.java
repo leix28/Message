@@ -1,6 +1,5 @@
 package com.ihs.demo.message_2013011344;
 
-import test.contacts.demo.friends.api.HSContactFriendsMgr;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -15,6 +14,8 @@ import com.ihs.commons.utils.HSLog;
 import com.ihs.message_2013011344.R;
 import com.ihs.message_2013011344.managers.HSMessageManager;
 
+import test.contacts.demo.friends.api.HSContactFriendsMgr;
+
 public class MainActivity extends HSActionBarActivity {
 
     private final static String TAG = MainActivity.class.getName();
@@ -28,7 +29,7 @@ public class MainActivity extends HSActionBarActivity {
         bar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
         int[] tabNames = { R.string.contacts, R.string.messages, R.string.settings, R.string.sample };
         tabs = new Tab[4];
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             Tab tab = bar.newTab();
             tabs[i] = tab;
             tab.setText(tabNames[i]);

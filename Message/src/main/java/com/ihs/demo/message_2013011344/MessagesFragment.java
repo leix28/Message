@@ -76,7 +76,7 @@ public class MessagesFragment extends Fragment implements INotificationObserver 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        ContactMstManager.getInstance().deleteMsgs(mid);
+                        ContactMsgManager.getInstance().deleteMsgs(mid);
                         HSBundle bundle = new HSBundle();
                         bundle.putObject("mid", mid);
                         HSGlobalNotificationCenter.sendNotificationOnMainThread(MESSAGE_DELETE_NOTIFICATION, bundle);
@@ -101,11 +101,11 @@ public class MessagesFragment extends Fragment implements INotificationObserver 
         });
 
         HSGlobalNotificationCenter.addObserver(DemoApplication.APPLICATION_NOTIFICATION_MESSAGE_CHANGE, this);
-        for (String mid : ContactMstManager.getInstance().getMids()) {
+        for (String mid : ContactMsgManager.getInstance().getMids()) {
             if (mid.equals(HSAccountManager.getInstance().getMainAccount().getMID())) continue;
-            if (!ContactMstManager.getInstance().hasMsgs(mid)) continue;
+            if (!ContactMsgManager.getInstance().hasMsgs(mid)) continue;
 
-            HSBaseMessage message = HSMessageManager.getInstance().queryMessage(ContactMstManager.getInstance().getFirstMsg(mid));
+            HSBaseMessage message = HSMessageManager.getInstance().queryMessage(ContactMsgManager.getInstance().getFirstMsg(mid));
             Contact contact = FriendManager.getInstance().getFriend(mid);
             if (contact != null)
                 contactMsgs.add(new ContactMsg(contact, message));

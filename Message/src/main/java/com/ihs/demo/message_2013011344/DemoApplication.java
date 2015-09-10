@@ -297,7 +297,7 @@ public class DemoApplication extends HSApplication implements HSMessageChangeLis
                 }
             }
             if (changeType == HSMessageChangeType.ADDED) {
-                ContactMstManager.getInstance().insertMsgs(messages);
+                ContactMsgManager.getInstance().insertMsgs(messages);
             }
         }
     }

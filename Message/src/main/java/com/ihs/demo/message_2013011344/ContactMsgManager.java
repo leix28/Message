@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.ihs.account.api.account.HSAccountManager;
+import com.ihs.commons.notificationcenter.HSGlobalNotificationCenter;
+import com.ihs.commons.notificationcenter.INotificationObserver;
+import com.ihs.commons.utils.HSBundle;
 import com.ihs.commons.utils.HSLog;
 import com.ihs.message_2013011344.managers.MessageDBManager;
 import com.ihs.message_2013011344.types.HSBaseMessage;
@@ -18,7 +21,7 @@ import java.util.List;
  * Created by LazyLie on 15/9/8.
  */
 
-public class ContactMstManager extends SQLiteOpenHelper {
+public class ContactMsgManager extends SQLiteOpenHelper implements INotificationObserver {
     private static final String DBNAME = "contact_msg.db";
     private static final String TABLENAME = "contact_msg_tb";
     private static final int DBVERSION = 1;
@@ -29,15 +32,17 @@ public class ContactMstManager extends SQLiteOpenHelper {
     private static final String DELETE_SQL = "delete from " + TABLENAME + " where " + CONTACT_ID + " = ?";
     private static final String QUERY_SQL = "select " + MSG_ID + " from " + TABLENAME + " where " + CONTACT_ID + " = ?";
     private static final String QUERY_NAME = "select distinct " + CONTACT_ID + " from " + TABLENAME;
+    private static final String DELETE_ALL = "delete from " + TABLENAME;
 
     private final static String TAG = MessageDBManager.class.getName();
 
-    private static ContactMstManager manager = null;
+    private static ContactMsgManager manager = null;
 
-    private ContactMstManager(Context context) {
+    private ContactMsgManager(Context context) {
         super(context, DBNAME, null, DBVERSION);
-        HSLog.e(TAG, CREATE_SQL);
-        HSLog.e(TAG, INSERT_SQL);
+        HSGlobalNotificationCenter.addObserver(HSAccountManager.HS_ACCOUNT_NOTIFICATION_BIND_DID_FINISH, this);
+        HSLog.d(TAG, CREATE_SQL);
+        HSLog.d(TAG, INSERT_SQL);
     }
 
     @Override
@@ -49,8 +54,8 @@ public class ContactMstManager extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
     }
 
-    public static ContactMstManager getInstance() {
-        if (manager == null) manager = new ContactMstManager(DemoApplication.getContext());
+    public static ContactMsgManager getInstance() {
+        if (manager == null) manager = new ContactMsgManager(DemoApplication.getContext());
         return manager;
     }
 
@@ -108,6 +113,13 @@ public class ContactMstManager extends SQLiteOpenHelper {
             cursor.move(1);
         }
         return list;
+    }
+    
+    @Override
+    public void onReceive(String name, HSBundle bundle) {
+        if (name.equals(HSAccountManager.HS_ACCOUNT_NOTIFICATION_BIND_DID_FINISH)) {   
+            getWritableDatabase().execSQL(DELETE_ALL);
+        }
     }
 }
 

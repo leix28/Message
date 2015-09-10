@@ -243,7 +243,7 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
 
     private void init() {
 
-        ArrayList<String> messages = ContactMstManager.getInstance().getMsgs(mid);
+        ArrayList<String> messages = ContactMsgManager.getInstance().getMsgs(mid);
         for (String messageId : messages) {
             chatHistoryList.add(HSMessageManager.getInstance().queryMessage(messageId));
         }

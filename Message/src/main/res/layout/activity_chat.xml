@@ -31,6 +31,14 @@
             android:id="@+id/chat_send_voice"
             android:src="@drawable/chat_select_send_audio_bt"/>
 
+        <ImageView
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/chat_send_text"
+            android:src="@drawable/chat_select_send_text_bt"
+            android:visibility="gone"/>
+
+
         <EditText
             android:id="@+id/chat_text"
             android:layout_width="0dp"
@@ -40,6 +48,17 @@
             android:textColor="@color/black"
             android:paddingLeft="6dp"
             android:paddingRight="6dp"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="5"
+            android:background="@color/main_color_green"
+            android:id="@+id/chat_voice"
+            android:visibility="gone"
+            android:text="Hold to Send Voice"
+            android:textSize="20dp"
+            android:textColor="@color/whitex" />
 
         <ImageView
             android:layout_width="30dp"

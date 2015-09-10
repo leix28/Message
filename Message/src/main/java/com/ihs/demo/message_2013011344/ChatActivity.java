@@ -43,8 +43,8 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
 
     String mid, name;
     EditText chatText;
-    Button sendButton;
-    ImageView moreChoice, sendImage, sendLocation;
+    Button sendButton, chatVoice;
+    ImageView moreChoice, sendImage, sendLocation, sendVoiceButton, sendTextButton;
     LinearLayout moreChoiceBar;
     ListView chatHistoryListView;
     List<HSBaseMessage> chatHistoryList = new ArrayList<HSBaseMessage>();
@@ -69,7 +69,10 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
         setTitle(name);
 
         chatText = (EditText)findViewById(R.id.chat_text);
+        chatVoice = (Button)findViewById(R.id.chat_voice);
         sendButton = (Button)findViewById(R.id.chat_send);
+        sendTextButton = (ImageView)findViewById(R.id.chat_send_text);
+        sendVoiceButton = (ImageView)findViewById(R.id.chat_send_voice);
         moreChoice = (ImageView)findViewById(R.id.chat_more_choice);
         moreChoiceBar = (LinearLayout)findViewById(R.id.chat_more_btn);
         sendImage = (ImageView)findViewById(R.id.chat_send_image);
@@ -132,6 +135,30 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(intent, 1);
+            }
+        });
+
+        sendTextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendVoiceButton.setVisibility(View.VISIBLE);
+                sendTextButton.setVisibility(View.GONE);
+                moreChoice.setVisibility(View.VISIBLE);
+                chatVoice.setVisibility(View.GONE);
+                chatText.setVisibility(View.VISIBLE);
+            }
+        });
+
+        sendVoiceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                sendVoiceButton.setVisibility(View.GONE);
+                sendTextButton.setVisibility(View.VISIBLE);
+                moreChoice.setVisibility(View.GONE);
+                chatVoice.setVisibility(View.VISIBLE);
+                chatText.setVisibility(View.GONE);
             }
         });
 

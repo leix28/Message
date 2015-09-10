@@ -2,6 +2,7 @@ package com.ihs.demo.message_2013011344;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 import com.ihs.account.api.account.HSAccountManager;
 import com.ihs.app.framework.HSApplication;
 import com.ihs.message_2013011344.R;
+import com.ihs.message_2013011344.types.HSAudioMessage;
 import com.ihs.message_2013011344.types.HSBaseMessage;
 import com.ihs.message_2013011344.types.HSImageMessage;
 import com.ihs.message_2013011344.types.HSMessageType;
@@ -34,10 +36,10 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, final ViewGroup parent) {
         HSBaseMessage msg = getItem(position);
         View view;
-        ViewHolder viewHolder;
+        final ViewHolder viewHolder;
 
         if (convertView == null) {
             view = LayoutInflater.from(getContext()).inflate(resourceId, null);
@@ -67,6 +69,7 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
                 viewHolder.leftMsgText.setText(((HSTextMessage) msg).getText().toString());
                 viewHolder.leftMsgText.setVisibility(View.VISIBLE);
                 viewHolder.leftMsgImage.setVisibility(View.GONE);
+                viewHolder.leftMsgText.setOnClickListener(null);
             } else if (msg.getType() == HSMessageType.IMAGE) {
                 Uri uri;
                 final HSImageMessage imgmsg = (HSImageMessage)msg;
@@ -94,10 +97,33 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
                         }
                     }
                 });
+                viewHolder.leftMsgText.setOnClickListener(null);
+            } else if (msg.getType() == HSMessageType.AUDIO) {
+                Uri uri;
+                final HSAudioMessage adimsg = (HSAudioMessage)msg;
+                if (adimsg.getMediaStatus() == HSBaseMessage.HSMessageMediaStatus.TO_DOWNLOAD) {
+                    adimsg.download();
+                }
+                viewHolder.leftMsgText.setVisibility(View.VISIBLE);
+                viewHolder.leftMsgImage.setVisibility(View.GONE);
+                viewHolder.leftMsgText.setText("[Audio] " + (adimsg.getDuration() < 3 ? "unknown" : adimsg.getDuration()) + " seconds");
+                viewHolder.leftMsgText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (adimsg.getMediaStatus() == HSBaseMessage.HSMessageMediaStatus.DOWNLOADED) {
+                            MediaPlayer player = MediaPlayer.create(getContext(), Uri.fromFile(new File(adimsg.getAudioFilePath())));
+                            player.start();
+                        } else {
+                            //TODO download not finish
+                        }
+                    }
+                });
+
             } else {
                 viewHolder.leftMsgText.setText(msg.toString());
                 viewHolder.leftMsgText.setVisibility(View.VISIBLE);
                 viewHolder.leftMsgImage.setVisibility(View.GONE);
+                viewHolder.leftMsgText.setOnClickListener(null);
             }
         } else if (msg.getFrom().equals(HSAccountManager.getInstance().getMainAccount().getMID())) {
             viewHolder.rightLayout.setVisibility(View.VISIBLE);
@@ -110,6 +136,8 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
                 viewHolder.rightMsgText.setText(((HSTextMessage)msg).getText().toString());
                 viewHolder.rightMsgText.setVisibility(View.VISIBLE);
                 viewHolder.rightMsgImage.setVisibility(View.GONE);
+                viewHolder.rightMsgText.setOnClickListener(null);
+
             } else if (msg.getType() == HSMessageType.IMAGE) {
                 final HSImageMessage imgmsg = (HSImageMessage)msg;
                 viewHolder.rightMsgImage.setImageURI(Uri.fromFile(new File(imgmsg.getNormalImageFilePath())));
@@ -124,10 +152,25 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
                         getContext().startActivity(intent);
                     }
                 });
-            } else {
-                viewHolder.rightMsgText.setText(msg.toString());
-                viewHolder.rightMsgText.setVisibility(View.VISIBLE);
+                viewHolder.rightMsgText.setOnClickListener(null);
+
+            } else if (msg.getType() == HSMessageType.AUDIO) {
+                final HSAudioMessage adimsg = (HSAudioMessage)msg;
                 viewHolder.rightMsgImage.setVisibility(View.GONE);
+                viewHolder.rightMsgText.setVisibility(View.VISIBLE);
+                viewHolder.rightMsgText.setText("[Audio] " + (int) ((HSAudioMessage) msg).getDuration() + " seconds");
+                viewHolder.rightMsgText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        MediaPlayer player = MediaPlayer.create(getContext(), Uri.fromFile(new File(adimsg.getAudioFilePath())));
+                        player.start();
+                    }
+                });
+            } else {
+                    viewHolder.rightMsgText.setText(msg.toString());
+                    viewHolder.rightMsgText.setVisibility(View.VISIBLE);
+                    viewHolder.rightMsgImage.setVisibility(View.GONE);
+                    viewHolder.rightMsgText.setOnClickListener(null);
             }
         }
         return view;

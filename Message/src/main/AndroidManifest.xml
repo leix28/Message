@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ihs.message_2013011344"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.0">
 
     <uses-sdk
         android:minSdkVersion="9"
@@ -55,7 +55,8 @@
 
         <activity
             android:name="com.ihs.demo.message_2013011344.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -66,17 +67,19 @@
             android:name="com.ihs.demo.message_2013011344.LoginActivity"
             android:screenOrientation="portrait" >
         </activity>
-        <activity android:name="com.ihs.demo.message_2013011344.ZoomImageView" >
+        <activity android:name="com.ihs.demo.message_2013011344.ProBaseActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name="com.ihs.demo.message_2013011344.ProBaseActivity" >
+        <activity android:name="com.ihs.demo.message_2013011344.MtVerifyActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name="com.ihs.demo.message_2013011344.MtVerifyActivity" >
-        </activity>
-        <activity android:name="com.ihs.demo.message_2013011344.CongratulationActivity" >
+        <activity android:name="com.ihs.demo.message_2013011344.CongratulationActivity"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name="com.ihs.demo.message_2013011344.ChatActivity"
-            android:launchMode="singleTop" >
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
         </activity>
 
         <!-- ===================================================== -->

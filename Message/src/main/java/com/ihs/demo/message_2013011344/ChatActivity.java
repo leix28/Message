@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.ihs.app.framework.HSApplication;
 import com.ihs.app.framework.HSSessionMgr;
 import com.ihs.commons.notificationcenter.HSGlobalNotificationCenter;
 import com.ihs.commons.notificationcenter.INotificationObserver;
@@ -32,11 +34,14 @@ import com.ihs.commons.utils.HSLog;
 import com.ihs.message_2013011344.R;
 import com.ihs.message_2013011344.managers.HSMessageChangeListener.HSMessageChangeType;
 import com.ihs.message_2013011344.managers.HSMessageManager;
+import com.ihs.message_2013011344.types.HSAudioMessage;
 import com.ihs.message_2013011344.types.HSBaseMessage;
 import com.ihs.message_2013011344.types.HSImageMessage;
 import com.ihs.message_2013011344.types.HSTextMessage;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ChatActivity extends HSActionBarActivity implements INotificationObserver {
@@ -50,6 +55,10 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
     List<HSBaseMessage> chatHistoryList = new ArrayList<HSBaseMessage>();
     MsgAdapter chatHistoryListAdapter;
     private final static String TAG = SampleFragment.class.getName();
+
+    MediaRecorder recorder;
+    String voiceName;
+    long voiceStart;
 
     private void flushData() {
         chatHistoryListAdapter.notifyDataSetChanged();
@@ -162,6 +171,53 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
             }
         });
 
+        chatVoice.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (recorder != null) {
+                        recorder.release();
+                    }
+                    recorder = new MediaRecorder();
+                    recorder.setAudioChannels(1);
+                    recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                    recorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+                    recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+                    recorder.setMaxDuration(60000);
+                    voiceStart = new Date().getTime();
+                    voiceName = HSApplication.getContext().getCacheDir() + "/" + "voice_" + mid + "_" + voiceStart + ".3gp";
+                    recorder.setOutputFile(voiceName);
+                    try {
+                        recorder.prepare();
+                    } catch (IOException e) {
+                        recorder.release();
+                        return false;
+                    }
+                    recorder.start();
+
+                } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL){
+                    recorder.stop();
+                    recorder.release();
+                    long duration = new Date().getTime() - voiceStart;
+                    duration /= 1000;
+                    if (duration < 1) {
+                        //TODO too short voice;
+                        return false;
+                    }
+                    HSAudioMessage message = new HSAudioMessage(mid, voiceName, duration);
+                    HSMessageManager.getInstance().send(message, new HSMessageManager.SendMessageCallback() {
+
+                        @Override
+                        public void onMessageSentFinished(HSBaseMessage message, boolean success, HSError error) {
+                            HSLog.d(TAG, "success: " + success);
+                        }
+                    }, new Handler());
+
+                }
+                return false;
+            }
+        });
+
         HSGlobalNotificationCenter.addObserver(DemoApplication.APPLICATION_NOTIFICATION_MESSAGE_CHANGE, this);
         HSGlobalNotificationCenter.addObserver(MessagesFragment.MESSAGE_DELETE_NOTIFICATION, this);
         init();
@@ -223,7 +279,7 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
         if (name.equals(DemoApplication.APPLICATION_NOTIFICATION_MESSAGE_CHANGE)) {
             HSMessageChangeType changeType = (HSMessageChangeType)bundle.getObject("changeType");
             List<HSBaseMessage> messages = (List<HSBaseMessage>)bundle.getObject("messages");
-            boolean flag = false, sendUnreadNotification = false;
+            boolean flag = false;
 
             for (HSBaseMessage message : messages)
                 if (message.getTo().equals(mid) || message.getFrom().equals(mid)) {

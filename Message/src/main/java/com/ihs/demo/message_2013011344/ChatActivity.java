@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.baidu.location.BDLocation;
 import com.ihs.app.framework.HSApplication;
 import com.ihs.app.framework.HSSessionMgr;
 import com.ihs.commons.notificationcenter.HSGlobalNotificationCenter;
@@ -37,12 +38,14 @@ import com.ihs.message_2013011344.managers.HSMessageManager;
 import com.ihs.message_2013011344.types.HSAudioMessage;
 import com.ihs.message_2013011344.types.HSBaseMessage;
 import com.ihs.message_2013011344.types.HSImageMessage;
+import com.ihs.message_2013011344.types.HSLocationMessage;
 import com.ihs.message_2013011344.types.HSTextMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 
 public class ChatActivity extends HSActionBarActivity implements INotificationObserver {
 
@@ -195,7 +198,7 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
                     }
                     recorder.start();
 
-                } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL){
+                } else if (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL) {
                     recorder.stop();
                     recorder.release();
                     long duration = new Date().getTime() - voiceStart;
@@ -215,6 +218,21 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
 
                 }
                 return false;
+            }
+        });
+
+        sendLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final BDLocation location = DemoApplication.mLocation;
+                HSLocationMessage locationMessage = new HSLocationMessage(mid, location.getLatitude(), location.getLongitude(), location.getLocationDescribe());
+                HSMessageManager.getInstance().send(locationMessage, new HSMessageManager.SendMessageCallback() {
+                    @Override
+                    public void onMessageSentFinished(HSBaseMessage message, boolean success, HSError error) {
+                        HSLog.d(TAG, "success: " + success);
+                        HSLog.e(TAG, "RET: " + location.getStreet());
+                    }
+                }, new Handler());
             }
         });
 

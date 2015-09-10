@@ -5,7 +5,7 @@ android {
     buildToolsVersion "23.0.0"
 
     defaultConfig {
-        applicationId "com.ihs.message"
+        applicationId "com.ihs.message_2013011344"
         minSdkVersion 15
         targetSdkVersion 19
     }
@@ -21,10 +21,11 @@ android {
 dependencies {
     compile project(':androidsupportv7appcompat')
     compile project(':googleplayservices_lib_r21')
-    compile files('libs/BaiduLBS_Android.jar')
+    compile files('libs/BaiduLocSDK_6.11.jar')
     compile files('libs/libAccount.jar')
     compile files('libs/libAppFramework.jar')
     compile files('libs/libContacts.jar')
     compile files('libs/libphonenumber.jar')
     compile files('libs/universal-image-loader-1.9.3-with-sources.jar')
+    compile files('libs/baidumapapi_v3_5_0.jar')
 }

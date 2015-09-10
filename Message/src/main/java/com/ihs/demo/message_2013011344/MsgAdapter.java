@@ -18,6 +18,7 @@ import com.ihs.message_2013011344.R;
 import com.ihs.message_2013011344.types.HSAudioMessage;
 import com.ihs.message_2013011344.types.HSBaseMessage;
 import com.ihs.message_2013011344.types.HSImageMessage;
+import com.ihs.message_2013011344.types.HSLocationMessage;
 import com.ihs.message_2013011344.types.HSMessageType;
 import com.ihs.message_2013011344.types.HSTextMessage;
 
@@ -106,7 +107,7 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
                 }
                 viewHolder.leftMsgText.setVisibility(View.VISIBLE);
                 viewHolder.leftMsgImage.setVisibility(View.GONE);
-                viewHolder.leftMsgText.setText("[Audio] " + (adimsg.getDuration() < 3 ? "unknown" : adimsg.getDuration()) + " seconds");
+                viewHolder.leftMsgText.setText("[轻按来播放]" + (adimsg.getDuration() < 3 ? "?" : adimsg.getDuration()) + "秒");
                 viewHolder.leftMsgText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -119,7 +120,22 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
                     }
                 });
 
-            } else {
+            } else if (msg.getType() == HSMessageType.LOCATION) {
+                final  HSLocationMessage locmsg = (HSLocationMessage)msg;
+                viewHolder.leftMsgImage.setVisibility(View.GONE);
+                viewHolder.leftMsgText.setVisibility(View.VISIBLE);
+                viewHolder.leftMsgText.setText("[轻按查看地点]");
+                viewHolder.leftMsgText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), MapActivity.class);
+                        intent.putExtra("latitude", locmsg.getLatitude());
+                        intent.putExtra("longitude", locmsg.getLongitude());
+                        getContext().startActivity(intent);
+                    }
+                });
+
+            }  else {
                 viewHolder.leftMsgText.setText(msg.toString());
                 viewHolder.leftMsgText.setVisibility(View.VISIBLE);
                 viewHolder.leftMsgImage.setVisibility(View.GONE);
@@ -158,7 +174,7 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
                 final HSAudioMessage adimsg = (HSAudioMessage)msg;
                 viewHolder.rightMsgImage.setVisibility(View.GONE);
                 viewHolder.rightMsgText.setVisibility(View.VISIBLE);
-                viewHolder.rightMsgText.setText("[Audio] " + (int) ((HSAudioMessage) msg).getDuration() + " seconds");
+                viewHolder.rightMsgText.setText("[Tap for Audio] " + (int) ((HSAudioMessage) msg).getDuration() + " sec");
                 viewHolder.rightMsgText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -166,11 +182,26 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
                         player.start();
                     }
                 });
+            } else if (msg.getType() == HSMessageType.LOCATION) {
+                final  HSLocationMessage locmsg = (HSLocationMessage)msg;
+                viewHolder.rightMsgImage.setVisibility(View.GONE);
+                viewHolder.rightMsgText.setVisibility(View.VISIBLE);
+                viewHolder.rightMsgText.setText("[Tap for Location]");
+                viewHolder.rightMsgText.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getContext(), MapActivity.class);
+                        intent.putExtra("latitude", locmsg.getLatitude());
+                        intent.putExtra("longitude", locmsg.getLongitude());
+                        getContext().startActivity(intent);
+                    }
+                });
+
             } else {
-                    viewHolder.rightMsgText.setText(msg.toString());
-                    viewHolder.rightMsgText.setVisibility(View.VISIBLE);
-                    viewHolder.rightMsgImage.setVisibility(View.GONE);
-                    viewHolder.rightMsgText.setOnClickListener(null);
+                viewHolder.rightMsgText.setText(msg.toString());
+                viewHolder.rightMsgText.setVisibility(View.VISIBLE);
+                viewHolder.rightMsgImage.setVisibility(View.GONE);
+                viewHolder.rightMsgText.setOnClickListener(null);
             }
         }
         return view;

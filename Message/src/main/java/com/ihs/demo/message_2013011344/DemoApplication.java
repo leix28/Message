@@ -1,20 +1,22 @@
 package com.ihs.demo.message_2013011344;
 
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.app.TaskStackBuilder;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Icon;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.baidu.mapapi.SDKInitializer;
 import com.ihs.account.api.account.HSAccountManager;
 import com.ihs.account.api.account.HSAccountManager.HSAccountSessionState;
@@ -59,7 +61,9 @@ public class DemoApplication extends HSApplication implements HSMessageChangeLis
 
     private NotificationManager notificationManager;
 
-
+    LocationClient mLocationClient = null;
+    static public BDLocation mLocation = new BDLocation();
+    
     @Override
     public void onCreate() {
         super.onCreate();
@@ -71,7 +75,7 @@ public class DemoApplication extends HSApplication implements HSMessageChangeLis
         initImageLoader(this);
 
         // 初始化百度地图 SDK
-        SDKInitializer.initialize(getApplicationContext());
+//        SDKInitializer.initialize(getApplicationContext());
 
         // 初始化通讯录管理类，同步通讯录，用于生成好友列表
         HSPhoneContactMgr.init();
@@ -94,8 +98,38 @@ public class DemoApplication extends HSApplication implements HSMessageChangeLis
 
         receivePlayer = MediaPlayer.create(this, R.raw.message_ringtone_received);
         sendPlayer = MediaPlayer.create(this, R.raw.message_ringtone_sent);
+        
+        LocationClientOption opt = new LocationClientOption();
+        opt.setLocationMode(LocationClientOption.LocationMode.Battery_Saving);
+        mLocationClient = new LocationClient(this);
+        mLocationClient.setLocOption(opt);
+
+        mLocationClient.registerLocationListener(new BDLocationListener() {
+            @Override
+            public void onReceiveLocation(BDLocation bdLocation) {
+                mLocation = bdLocation;
+            }
+        });
+        mLocationClient.start();
+        SDKInitializer.initialize(this);
+        IntentFilter iFilter = new IntentFilter();
+        iFilter.addAction(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_ERROR);
+        iFilter.addAction(SDKInitializer.SDK_BROADCAST_ACTION_STRING_NETWORK_ERROR);
+        SDKReceiver mReceiver = new SDKReceiver();
+        registerReceiver(mReceiver, iFilter);
+
     }
 
+    public class SDKReceiver extends BroadcastReceiver {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if(action.equals(SDKInitializer.SDK_BROADTCAST_ACTION_STRING_PERMISSION_CHECK_ERROR))
+            {
+                HSLog.e(TAG, "KEY ERROR!");
+                SDKInitializer.initialize(getApplicationContext());
+            }
+        }
+    }
     public static void doInit() {
         HSLog.d(TAG, "doInit invoked");
 

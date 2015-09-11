@@ -109,7 +109,7 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
                 }
                 viewHolder.leftMsgText.setVisibility(View.VISIBLE);
                 viewHolder.leftMsgImage.setVisibility(View.GONE);
-                viewHolder.leftMsgText.setText("[轻按来播放]" + (adimsg.getDuration() < 3 ? "?" : adimsg.getDuration()) + "秒");
+                viewHolder.leftMsgText.setText("[Tap for Audio]" + (adimsg.getDuration() < 3 ? "?" : adimsg.getDuration()) + "秒");
                 viewHolder.leftMsgText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -126,7 +126,7 @@ public class MsgAdapter extends ArrayAdapter<HSBaseMessage> {
                 final  HSLocationMessage locmsg = (HSLocationMessage)msg;
                 viewHolder.leftMsgImage.setVisibility(View.GONE);
                 viewHolder.leftMsgText.setVisibility(View.VISIBLE);
-                viewHolder.leftMsgText.setText("[轻按查看地点]");
+                viewHolder.leftMsgText.setText("[Tap for Location]");
                 viewHolder.leftMsgText.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

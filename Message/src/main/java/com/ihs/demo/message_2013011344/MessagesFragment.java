@@ -118,6 +118,7 @@ public class MessagesFragment extends Fragment implements INotificationObserver 
 
         }
         HSGlobalNotificationCenter.addObserver(DemoApplication.APPLICATION_NOTIFICATION_UNREAD_CHANGE, this);
+        HSGlobalNotificationCenter.addObserver(HSAccountManager.HS_ACCOUNT_NOTIFICATION_LOGOUT_DID_FINISH, this);
         HSGlobalNotificationCenter.addObserver(MESSAGE_DELETE_NOTIFICATION, this);
         refresh();
         return view;
@@ -181,6 +182,10 @@ public class MessagesFragment extends Fragment implements INotificationObserver 
                     }
                 }
             }
+        }
+
+        if (name.equals(HSAccountManager.HS_ACCOUNT_NOTIFICATION_LOGOUT_DID_FINISH)) {
+            contactMsgs.clear();
         }
 
         if (name.equals(MESSAGE_DELETE_NOTIFICATION)) {

@@ -53,6 +53,7 @@ public class ContactsFragment extends Fragment implements INotificationObserver 
         });
         HSGlobalNotificationCenter.addObserver(FriendManager.NOTIFICATION_NAME_FRIEND_CHANGED, this);
         HSGlobalNotificationCenter.addObserver(DemoApplication.APPLICATION_NOTIFICATION_UNREAD_CHANGE, this);
+        HSGlobalNotificationCenter.addObserver(HSAccountManager.HS_ACCOUNT_NOTIFICATION_LOGOUT_DID_FINISH, this);
         refresh();
         return view;
     }
@@ -68,6 +69,10 @@ public class ContactsFragment extends Fragment implements INotificationObserver 
 
     @Override
     public void onReceive(String arg0, HSBundle arg1) {
+        if (arg0.equals(HSAccountManager.HS_ACCOUNT_NOTIFICATION_LOGOUT_DID_FINISH)) {
+            adapter.getContacts().clear();
+            return;
+        }
         refresh();
     }
 

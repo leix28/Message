@@ -136,8 +136,12 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 moreChoiceBar.setVisibility(View.VISIBLE);
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                try {
+                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                } catch (NullPointerException e) {
+
+                }
                 return false;
             }
         });
@@ -146,8 +150,12 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 moreChoiceBar.setVisibility(View.GONE);
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                try {
+                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                } catch (NullPointerException e) {
+
+                }
                 return false;
             }
         });
@@ -176,8 +184,12 @@ public class ChatActivity extends HSActionBarActivity implements INotificationOb
         sendVoiceButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                try {
+                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                } catch (NullPointerException e) {
+
+                }
                 sendVoiceButton.setVisibility(View.GONE);
                 sendTextButton.setVisibility(View.VISIBLE);
                 moreChoice.setVisibility(View.GONE);

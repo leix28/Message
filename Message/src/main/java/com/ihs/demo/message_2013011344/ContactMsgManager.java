@@ -42,6 +42,7 @@ public class ContactMsgManager extends SQLiteOpenHelper implements INotification
     private ContactMsgManager(Context context) {
         super(context, DBNAME, null, DBVERSION);
         HSGlobalNotificationCenter.addObserver(HSAccountManager.HS_ACCOUNT_NOTIFICATION_SIGNIN_DID_FINISH, this);
+        HSGlobalNotificationCenter.addObserver(HSAccountManager.HS_ACCOUNT_NOTIFICATION_LOGOUT_DID_FINISH, this);
         HSLog.d(TAG, CREATE_SQL);
         HSLog.d(TAG, INSERT_SQL);
     }
@@ -118,7 +119,7 @@ public class ContactMsgManager extends SQLiteOpenHelper implements INotification
     
     @Override
     public void onReceive(String name, HSBundle bundle) {
-        if (name.equals(HSAccountManager.HS_ACCOUNT_NOTIFICATION_SIGNIN_DID_FINISH)) {   
+        if (name.equals(HSAccountManager.HS_ACCOUNT_NOTIFICATION_SIGNIN_DID_FINISH) || name.equals(HSAccountManager.HS_ACCOUNT_NOTIFICATION_LOGOUT_DID_FINISH)) {
             getWritableDatabase().execSQL(DELETE_ALL);
         }
     }
